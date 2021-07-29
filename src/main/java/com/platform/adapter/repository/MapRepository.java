@@ -6,9 +6,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Repository;
+
 import com.platform.domain.entity.Client;
 import com.platform.domain.port.ClientRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Repository
+@Slf4j
 public class MapRepository implements ClientRepository {
 
 	private final Map<Long, Client> mapDB = new HashMap<>();
@@ -20,8 +26,17 @@ public class MapRepository implements ClientRepository {
 	}
 
 	@Override
-	public Optional<Client> findById(Long idClient) {
-		return Optional.ofNullable(mapDB.get(idClient));
+	public Optional<Client> findById(Long idClient){
+		try {
+			return Optional.ofNullable(mapDB.get(idClient));
+		}catch(ClassCastException cce) {
+			log.error("Cast inválido para o tipo Client", cce);
+		}catch(NullPointerException npe) {
+			log.error("Inválido Tipo id do cliente", npe);
+		}catch(Exception e) {
+			log.error("Error: ", e);
+		}
+		return null;
 	}
 
 	@Override

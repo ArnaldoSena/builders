@@ -1,14 +1,19 @@
-package com.platform.usecase;
+package com.platform.usecase.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.platform.adapter.id_generator.UuidGenerator;
 import com.platform.domain.entity.Client;
 import com.platform.domain.exception.ClientAlreadyExistsException;
 import com.platform.domain.port.ClientRepository;
 
 import lombok.AllArgsConstructor;
-
+@Service
 @AllArgsConstructor
-public class CreateClient {
+public class CreateClientService {
 	
+	@Autowired
 	private final ClientRepository repository;
 	
 	public Client create(final Client client) throws ClientAlreadyExistsException {
@@ -16,7 +21,7 @@ public class CreateClient {
 			throw new ClientAlreadyExistsException(client.getEmail());
 		}
 		var newClient = Client.builder()
-				.id(1l)
+				.id(UuidGenerator.createId())
 				.email(client.getEmail())
 				.passWord(client.getPassWord())
 				.birthDate(client.getBirthDate())
