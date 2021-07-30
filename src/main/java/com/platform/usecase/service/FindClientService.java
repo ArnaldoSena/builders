@@ -7,17 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.platform.domain.entity.Client;
+import com.platform.domain.erros.Erro;
 import com.platform.domain.port.ClientRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+
 @Service
 @AllArgsConstructor
+@Slf4j
 public class FindClientService {
 	
 	@Autowired
 	private final ClientRepository repository;
 	
 	public Optional<Client> findById(final Long id){
+		if(id == null) {
+			log.error(Erro.ID_NULO);
+		}
 		return repository.findById(id);
 	}
 	

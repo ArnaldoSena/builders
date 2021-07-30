@@ -5,20 +5,22 @@ import org.springframework.stereotype.Service;
 
 import com.platform.adapter.id_generator.UuidGenerator;
 import com.platform.domain.entity.Client;
-import com.platform.domain.exception.ClientAlreadyExistsException;
+import com.platform.domain.erros.Erro;
 import com.platform.domain.port.ClientRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 @Service
+@Slf4j
 @AllArgsConstructor
 public class CreateClientService {
 	
 	@Autowired
 	private final ClientRepository repository;
 	
-	public Client create(final Client client) throws ClientAlreadyExistsException {
-		if(repository.findByEmail(client.getEmail()).isPresent()) {
-			throw new ClientAlreadyExistsException(client.getEmail());
+	public Client create(final Client client){
+		if(client == null) {
+			log.error(Erro.CLIENTE_NULO);
 		}
 		var newClient = Client.builder()
 				.id(UuidGenerator.createId())
