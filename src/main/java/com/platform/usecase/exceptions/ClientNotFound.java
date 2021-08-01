@@ -1,4 +1,4 @@
-package com.platform.domain.exception;
+package com.platform.usecase.exceptions;
 
 import lombok.Builder;
 

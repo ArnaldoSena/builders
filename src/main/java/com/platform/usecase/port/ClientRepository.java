@@ -1,4 +1,4 @@
-package com.platform.domain.port;
+package com.platform.usecase.port;
 
 import java.util.List;
 import java.util.Optional;

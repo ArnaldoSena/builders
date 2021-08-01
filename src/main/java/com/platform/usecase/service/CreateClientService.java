@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.platform.adapter.id_generator.UuidGenerator;
 import com.platform.domain.entity.Client;
-import com.platform.domain.erros.Erro;
-import com.platform.domain.port.ClientRepository;
+import com.platform.usecase.erros.Erro;
+import com.platform.usecase.port.ClientRepository;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

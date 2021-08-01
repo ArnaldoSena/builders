@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.platform.adapter.repository.MapRepository;
-import com.platform.domain.port.ClientRepository;
+import com.platform.usecase.port.ClientRepository;
 import com.platform.usecase.service.CreateClientService;
 import com.platform.usecase.service.DeleteClientService;
 import com.platform.usecase.service.FindClientService;

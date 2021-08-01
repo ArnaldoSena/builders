@@ -12,6 +12,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.domain.entity.Client;
-import com.platform.domain.erros.Erro;
+import com.platform.usecase.erros.Erro;
+import com.platform.usecase.mapper.ClientMapper;
 import com.platform.usecase.service.CreateClientService;
 import com.platform.usecase.service.DeleteClientService;
 import com.platform.usecase.service.FindClientService;
@@ -44,13 +46,14 @@ public class ClientController {
 
 	@GetMapping("clientes/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Optional<Client> getClienteById(Long idClient) {
-		return findService.findById(idClient);
+	public ClientResponse getClienteById(@PathVariable("id") Long idClient) {
+		Optional<Client> client = findService.findById(idClient); 
+		return ClientMapper.mapper(client);
 	}
 	
 	@GetMapping("clientes/email/{email}")
 	@ResponseStatus(HttpStatus.OK)
-	public Optional<Client> getClienteByEmail(String email){
+	public Optional<Client> getClienteByEmail(@PathVariable("email") String email){
 		return findService.findByEmail(email);
 	}
 	
@@ -75,14 +78,14 @@ public class ClientController {
 	
 	@PatchMapping("clientes")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Response<Client>> updateClient(Client client,
+	public ResponseEntity<Response<Client>> updateClient(@RequestBody Client client,
 			BindingResult result) throws NoSuchAlgorithmException{
 		log.info("Atualizando cliente {}", client.getFirstName());
 		Response<Client> response = new Response<Client>();
 		validarClienteInexistente(client, result);
 		//TODO Dto mapper
 		if(result.hasErrors()) {
-			log.error(Erro.CLIENTE_INEXISTENTE, result.getAllErrors());
+			log.error(Erro.CLIENTE_INEXISTENTE, client.getId());
 			result.getAllErrors()
 			.forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
@@ -91,9 +94,9 @@ public class ClientController {
 		return ResponseEntity.ok(response);
 	}
 	
-	@DeleteMapping("clientes")
+	@DeleteMapping("clientes/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteClient(Long id) {
+	public void deleteClient(@PathVariable("id") Long id) {
 		deleteService.delete(id);	
 	}
 	

@@ -1,4 +1,4 @@
-package com.platform.domain.erros;
+package com.platform.usecase.erros;
 
 public class Erro {
 	public static final String ID_NULO = "Id irfomado é nulo";

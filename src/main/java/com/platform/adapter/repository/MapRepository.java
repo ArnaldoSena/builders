@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import com.platform.domain.entity.Client;
-import com.platform.domain.port.ClientRepository;
+import com.platform.usecase.port.ClientRepository;
 
 @Repository
 public class MapRepository implements ClientRepository {
@@ -41,7 +41,7 @@ public class MapRepository implements ClientRepository {
 
 	@Override
 	public Client update(Client client) {
-		return mapDB.merge(client.getId(), client, null);
+		return mapDB.put(client.getId(), client);
 	}
 
 	@Override
