@@ -40,57 +40,55 @@ public class ClientController {
 	
 	@GetMapping("clientes")
 	@ResponseStatus(HttpStatus.OK)
-	List<Client> getAllClients(){
-		return findService.findAll();
+	List<ClientResponse> getAllClients(){
+		log.info("Listando todos os clientes.");
+		return ClientMapper.mapper(findService.findAll());
 	}
 
 	@GetMapping("clientes/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ClientResponse getClienteById(@PathVariable("id") Long idClient) {
-		Optional<Client> client = findService.findById(idClient); 
-		return ClientMapper.mapper(client);
+	public ClientResponse getClienteById(@PathVariable("id") Long idClient) { 
+		return ClientMapper.mapper(findService.findById(idClient));
 	}
 	
 	@GetMapping("clientes/email/{email}")
 	@ResponseStatus(HttpStatus.OK)
-	public Optional<Client> getClienteByEmail(@PathVariable("email") String email){
-		return findService.findByEmail(email);
+	public ClientResponse getClienteByEmail(@PathVariable("email") String email){
+		return ClientMapper.mapper(findService.findByEmail(email));
 	}
 	
 	@PostMapping("clientes")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Response<Client>> saveClient(@RequestBody Client client,
+	public ResponseEntity<Response<ClientResponse>> saveClient(@RequestBody Client client,
 			BindingResult result) throws NoSuchAlgorithmException{
 		
 		log.info("Cadastrando o cliente {}.", client.getFirstName());
-		Response<Client> response = new Response<Client>();
+		Response<ClientResponse> response = new Response<ClientResponse>();
 		validarClienteExistente(client, result);
-		//TODO dto mapper
 		if(result.hasErrors()) {
 			log.error(Erro.EMAIL_CADASTRADO, result.getAllErrors());
 			result.getAllErrors()
 				.forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
 		}
-		response.setData(createService.create(client));
+		response.setData(ClientMapper.mapper(createService.create(client)));
 		return ResponseEntity.ok(response);
 	}
 	
 	@PatchMapping("clientes")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Response<Client>> updateClient(@RequestBody Client client,
+	public ResponseEntity<Response<ClientResponse>> updateClient(@RequestBody Client client,
 			BindingResult result) throws NoSuchAlgorithmException{
 		log.info("Atualizando cliente {}", client.getFirstName());
-		Response<Client> response = new Response<Client>();
+		Response<ClientResponse> response = new Response<ClientResponse>();
 		validarClienteInexistente(client, result);
-		//TODO Dto mapper
 		if(result.hasErrors()) {
 			log.error(Erro.CLIENTE_INEXISTENTE, client.getId());
 			result.getAllErrors()
 			.forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
 		}
-		response.setData(updateService.update(client));
+		response.setData(ClientMapper.mapper(updateService.update(client)));
 		return ResponseEntity.ok(response);
 	}
 	
