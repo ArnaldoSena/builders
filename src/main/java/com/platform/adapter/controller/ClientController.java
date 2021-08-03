@@ -4,6 +4,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -37,12 +42,16 @@ public class ClientController {
 	@Autowired private UpdateClientService updateService;
 	@Autowired private FindClientService findService;
 	
+	
 	@GetMapping("clientes")
 	@ResponseStatus(HttpStatus.OK)
-	List<ClientResponse> getAllClients(){
+	Page<ClientResponse> getAllClients(@PageableDefault(page = 0, size = 5, sort = "firstName",
+				direction = Sort.Direction.ASC) Pageable pageable){
 		log.info("Listando todos os clientes.");
-		return ClientMapper.mapper(findService.findAll());
+		List<ClientResponse> clResponse = ClientMapper.mapper(findService.findAll());
+		return new PageImpl<>(clResponse, pageable, 400L);
 	}
+
 
 	@GetMapping("clientes/{id}")
 	@ResponseStatus(HttpStatus.OK)

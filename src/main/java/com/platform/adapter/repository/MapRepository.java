@@ -1,11 +1,15 @@
 package com.platform.adapter.repository;
 
+import java.awt.print.Pageable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.platform.domain.entity.Client;
@@ -34,10 +38,12 @@ public class MapRepository implements ClientRepository {
 				.map(map -> map.getValue())
 				.findFirst();
 	}
+	
 	@Override
 	public List<Client> findAll() {
 		return mapDB.values().stream().collect(Collectors.toList());
 	}
+
 
 	@Override
 	public Client update(Client client) {
@@ -48,4 +54,12 @@ public class MapRepository implements ClientRepository {
 	public void delete(Long idClient) {
 		mapDB.remove(idClient);
 	}
+
+	@Override
+	public Page<Client> findAll(Pageable pageable) {
+		List<Client> clients = mapDB.values().stream().collect(Collectors.toList());
+		return new PageImpl<>(clients, PageRequest.of(6, 50), 400L);
+	}
+
+
 }
